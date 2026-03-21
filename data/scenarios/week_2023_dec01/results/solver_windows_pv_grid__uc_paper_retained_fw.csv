@@ -1,0 +1,2 @@
+﻿window_id,global_start_idx,global_horizon_end,horizon_len,step_len,S0_mwh,S_boundary_mwh,status,termination,objective_window,wallclock_s,reported_runtime_s,achieved_gap_rel,best_feasible_objective,best_objective_bound,message
+1,0,168,168,168,200.0,200.0,aborted,maxTimeLimit,-637326.8743719725,902.4660817999975,,2.6051257273269037,397057.2918504921,-637326.8743719719,<undefined>

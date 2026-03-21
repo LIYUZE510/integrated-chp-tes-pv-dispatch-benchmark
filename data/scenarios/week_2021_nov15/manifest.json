@@ -1,0 +1,40 @@
+{
+  "created_utc": "2026-03-17T04:51:51.509938+00:00",
+  "inputs": {
+    "xai4heat_heat_demand": "C:/work/smartcities_chp_pv_sim/data/processed/xai4heat_heat_demand_substation_hourly.parquet",
+    "turbine_heat_segments_consistent": "C:/work/smartcities_chp_pv_sim/data/processed/kaz_chpp_v3/shared/turbine_heat_segments_consistent.parquet"
+  },
+  "scenario": {
+    "name": "week_2021_nov15",
+    "start": "2021-11-15 00:00:00",
+    "end": "2021-11-21 23:00:00",
+    "substations": [
+      "L4",
+      "L17",
+      "L12",
+      "L22",
+      "L8"
+    ],
+    "quantile": 0.99,
+    "target_utilization": 0.85,
+    "h_max_mw": 186.15449999999998,
+    "raw_quantile_mw": 1.7842200000000004,
+    "heat_scale": 88.68375256414564,
+    "pct_hours_over_capacity": 0.0
+  },
+  "outputs": {
+    "heat_parquet": "C:/work/smartcities_chp_pv_sim/data/scenarios/week_2021_nov15/heat.parquet"
+  },
+  "coverage": {
+    "common_start": "2021-11-01 07:00:00",
+    "common_end": "2024-03-31 23:00:00"
+  },
+  "basic_stats": {
+    "heat_demand_mw": {
+      "min": 0.0,
+      "p50": 81.89944549298849,
+      "p99": 158.23132499999997,
+      "max": 161.40442966674505
+    }
+  }
+}

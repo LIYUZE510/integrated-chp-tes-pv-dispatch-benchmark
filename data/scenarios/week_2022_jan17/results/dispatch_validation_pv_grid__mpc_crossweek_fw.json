@@ -1,0 +1,22 @@
+{
+  "created_utc": "2026-03-17T14:55:27.307574+00:00",
+  "pass": true,
+  "issues": [],
+  "thresholds": {
+    "residual_tol": 1e-05,
+    "bound_tol": 1e-05,
+    "overlap_tol_mw": 1e-05
+  },
+  "metrics": {
+    "heat_balance_residual_abs_max": 1.5489831639570184e-12,
+    "elec_balance_residual_abs_max": 1.4210854715202004e-14,
+    "grid_export_max_mw": 60.0000000000002,
+    "soc_min_mwh": -7.105427357601002e-14,
+    "soc_max_mwh": 610.8905745233682,
+    "import_export_overlap_max_mw": 7.105427357601002e-15,
+    "terminal_soc_mwh": 200.0,
+    "expected_terminal_soc_mwh": 200.0,
+    "terminal_soc_gap_mwh": 0.0,
+    "negative_nonnegative_columns": {}
+  }
+}

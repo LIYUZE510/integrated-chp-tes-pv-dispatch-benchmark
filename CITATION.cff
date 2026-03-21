@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the software release, the associated manuscript, and the upstream public datasets."
+title: "Integrated CHP-TES-PV Dispatch Benchmark"
+type: software
+version: 0.2.0
+date-released: 2026-03-21
+license: MIT
+authors:
+  - family-names: Li
+    given-names: Yuze
+  - family-names: Ju
+    given-names: Mingjing
+  - family-names: Fang
+    given-names: Zhuocheng
+  - family-names: Shi
+    given-names: Jingran
+repository-code: "https://github.com/LIYUZE510/integrated-chp-tes-pv-dispatch-benchmark"
+url: "https://github.com/LIYUZE510/integrated-chp-tes-pv-dispatch-benchmark"

@@ -1,0 +1,27 @@
+{
+  "dataset": {
+    "name": "Data for Modeling Large-scale Coal-Fired CHP Plant in Kazakhstan: Two Cases",
+    "doi": "10.17632/3tprt2ct2n.3",
+    "url": "https://data.mendeley.com/datasets/3tprt2ct2n/3",
+    "license": "CC BY 4.0"
+  },
+  "created_utc": "2026-02-24T03:59:02.499008+00:00",
+  "zip": {
+    "filename": "Data for Modeling Large-scale Coal-Fired CHP Plant in Kazakhstan Two Cases.zip",
+    "size_bytes": 116371,
+    "sha256": "186ad370d985569dd86a51452182574858e0a8029f29402ba5586d3a06bc9493"
+  },
+  "extracted": {
+    "root": "C:/work/smartcities_chp_pv_sim/data/raw/kaz_chpp_v3/extracted",
+    "file_count": 1,
+    "total_size_bytes": 340992,
+    "files": [
+      {
+        "relpath": "Data for Modeling Large-scale Coal-Fired CHP Plant in Kazakhstan Two Cases/Zhakiyev et.al. dataCHP_KZ_for_publication_DIB 11.07.22.xls",
+        "size_bytes": 340992,
+        "sha256": "53a56fb6bb55545861b3165bfb38eacdb4cd4e9c6e895503ed737a8e3c124835",
+        "mtime_utc": "2026-02-24T03:59:02.497009+00:00"
+      }
+    ]
+  }
+}

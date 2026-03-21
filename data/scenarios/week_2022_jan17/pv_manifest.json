@@ -1,0 +1,37 @@
+{
+  "created_utc": "2026-03-17T04:52:20.388607+00:00",
+  "pv_profile": {
+    "scenario": "week_2022_jan17",
+    "lat": 55.6761,
+    "lon": 12.5683,
+    "utc_offset_hours": 1.0,
+    "tilt_deg": 35.0,
+    "azimuth_deg": 180.0,
+    "albedo": 0.2,
+    "pv_dc_mw": 120.0,
+    "pv_ac_mw": 100.0,
+    "gamma_pdc_per_c": -0.003,
+    "inv_eff": 0.96,
+    "nasa_params": [
+      "ALLSKY_SFC_SW_DWN",
+      "ALLSKY_SFC_SW_DNI",
+      "ALLSKY_SFC_SW_DIFF",
+      "T2M",
+      "WS10M"
+    ],
+    "nasa_time_standard": "UTC",
+    "nasa_url": "https://power.larc.nasa.gov/api/temporal/hourly/point?parameters=ALLSKY_SFC_SW_DWN,ALLSKY_SFC_SW_DNI,ALLSKY_SFC_SW_DIFF,T2M,WS10M&community=SB&longitude=12.5683&latitude=55.6761&start=20220116&end=20220123&format=JSON&time-standard=UTC"
+  },
+  "outputs": {
+    "pv_parquet": "C:/work/smartcities_chp_pv_sim/data/scenarios/week_2022_jan17/pv.parquet"
+  },
+  "stats": {
+    "pv_ac_mw": {
+      "min": 0.0,
+      "p50": 0.0,
+      "p99": 67.12986733307905,
+      "max": 75.72674066371025,
+      "energy_mwh": 1337.8744328251523
+    }
+  }
+}

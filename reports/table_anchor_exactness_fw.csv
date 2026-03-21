@@ -1,0 +1,4 @@
+﻿Scenario,Horizon (h),Strategy,Validation pass,Termination,Achieved relative gap,Mean window relative gap,Runtime (s),Realized system cost,Hours at export cap
+week_2023_dec01_anchor24h_fw,24,Full-horizon UC,Yes,maxTimeLimit,2.3793068380364595,,7200.649415799999,44581.420202246154,0
+week_2023_dec01_anchor48h_fw,48,Full-horizon UC,Yes,maxTimeLimit,2.0533653121601603,,10802.419860300026,85532.25326384492,0
+week_2023_dec01_anchor48h_fw,48,Rolling MPC,Yes,maxTimeLimit,1.9361214290470026,1.8671527620146984,3601.2195982999983,88330.59898544363,0

@@ -1,0 +1,57 @@
+{
+  "dataset": {
+    "name": "XAI4HEAT SCADA Dataset 2024",
+    "doi": "10.17632/2mwc6x6kwb.1",
+    "url": "https://data.mendeley.com/datasets/2mwc6x6kwb/1",
+    "license": "CC BY 4.0"
+  },
+  "created_utc": "2026-02-24T02:40:44.081246+00:00",
+  "zip": {
+    "filename": "XAI4HEAT SCADA Dataset 2024.zip",
+    "size_bytes": 934402,
+    "sha256": "4cee8313fa7c66cdff3e6e928ce28a53f205a06b91c79e215bcd6ec6be618aed"
+  },
+  "extracted": {
+    "root": "C:/work/smartcities_chp_pv_sim/data/raw/xai4heat_scada_v1/extracted",
+    "file_count": 6,
+    "total_size_bytes": 3778727,
+    "files": [
+      {
+        "relpath": "XAI4HEAT SCADA Dataset 2024/xai4heat_scada_dataset_2024/xai4heat_heating_area.csv",
+        "size_bytes": 93,
+        "sha256": "f25dfb6e8a2aae4e6b8ed6d247da8278abdee32f3dc81375738c5c6733775f79",
+        "mtime_utc": "2026-02-24T02:40:44.059247+00:00"
+      },
+      {
+        "relpath": "XAI4HEAT SCADA Dataset 2024/xai4heat_scada_dataset_2024/xai4heat_scada_L12_processed.csv",
+        "size_bytes": 594671,
+        "sha256": "6fa7ff01ca21ecd40ef68a9a7573a11a4cef7112566a9402ba20dbd51077b57d",
+        "mtime_utc": "2026-02-24T02:40:44.065245+00:00"
+      },
+      {
+        "relpath": "XAI4HEAT SCADA Dataset 2024/xai4heat_scada_dataset_2024/xai4heat_scada_L17_processed.csv",
+        "size_bytes": 991168,
+        "sha256": "b900a5495557b9dd2a16b32d877f8f231f80a2a4c8628c1d6006a0d5da26a7ad",
+        "mtime_utc": "2026-02-24T02:40:44.070247+00:00"
+      },
+      {
+        "relpath": "XAI4HEAT SCADA Dataset 2024/xai4heat_scada_dataset_2024/xai4heat_scada_L22_processed.csv",
+        "size_bytes": 595092,
+        "sha256": "edafcd07399e031ba0b4b536bb2515e308fdf1eb77cce5ab0857e691b5216db8",
+        "mtime_utc": "2026-02-24T02:40:44.067248+00:00"
+      },
+      {
+        "relpath": "XAI4HEAT SCADA Dataset 2024/xai4heat_scada_dataset_2024/xai4heat_scada_L4_processed.csv",
+        "size_bytes": 1004034,
+        "sha256": "fcda21ad40fc0e08eb43e8603c725935037558a75531e5c602e6b5fbef19cf44",
+        "mtime_utc": "2026-02-24T02:40:44.074247+00:00"
+      },
+      {
+        "relpath": "XAI4HEAT SCADA Dataset 2024/xai4heat_scada_dataset_2024/xai4heat_scada_L8_processed.csv",
+        "size_bytes": 593669,
+        "sha256": "8be894e75d7e78a1ee1f6f096fadb7e539fc486dfecebc6980f441560d3e3fc4",
+        "mtime_utc": "2026-02-24T02:40:44.062250+00:00"
+      }
+    ]
+  }
+}

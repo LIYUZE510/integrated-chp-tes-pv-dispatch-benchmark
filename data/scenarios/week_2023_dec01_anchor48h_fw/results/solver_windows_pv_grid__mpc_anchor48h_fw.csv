@@ -1,0 +1,3 @@
+﻿window_id,global_start_idx,global_horizon_end,horizon_len,step_len,S0_mwh,S_boundary_mwh,must_on,must_off,window_terminal_soc_mode,window_terminal_soc_target_mwh,status,termination,objective_window,wallclock_s,reported_runtime_s,achieved_gap_rel,best_feasible_objective,best_objective_bound,message
+1,0,48,48,24,200.0,482.3230872381325,0,0,match_week_initial,200.0,aborted,maxTimeLimit,-89491.73149876698,1800.7593966000131,,1.9361214290470026,95598.42208704913,-89491.73149876695,<undefined>
+2,24,48,24,24,482.3230872381325,200.0,0,0,match_week_initial,200.0,aborted,maxTimeLimit,-38118.25338295589,1800.4602016999852,,1.7981840949823942,47756.21767281228,-38118.25338295589,<undefined>

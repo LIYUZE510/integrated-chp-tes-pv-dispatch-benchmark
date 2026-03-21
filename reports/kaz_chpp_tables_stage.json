@@ -1,0 +1,195 @@
+{
+  "created_utc": "2026-02-24T04:41:19.928942+00:00",
+  "xls": {
+    "filename": "Zhakiyev et.al. dataCHP_KZ_for_publication_DIB 11.07.22.xls",
+    "path": "C:/work/smartcities_chp_pv_sim/data/raw/kaz_chpp_v3/extracted/Data for Modeling Large-scale Coal-Fired CHP Plant in Kazakhstan Two Cases/Zhakiyev et.al. dataCHP_KZ_for_publication_DIB 11.07.22.xls"
+  },
+  "tables": [
+    {
+      "sheet": "DemEH (Case 1)",
+      "raw_shape": [
+        459,
+        13
+      ],
+      "chosen_header_row": 2,
+      "chosen_shape": [
+        456,
+        13
+      ],
+      "chosen_columns": [
+        "month",
+        "day",
+        "t",
+        "DemH1",
+        "DemH2",
+        "GenE",
+        "DemE",
+        "OwnUseF",
+        "OwnUse",
+        "TempOutM",
+        "DemH1 (MWh)",
+        "DemH2/h(MWh)",
+        "Electricity load (MWh)"
+      ],
+      "unnamed_cols": 0,
+      "nonnull_cells_ratio": 0.9711538461538461,
+      "notes": [
+        "raw_shape=(459, 13)",
+        "best_header_row=2, score=4.4135, meta={'unnamed': 0, 'nonnull_ratio': 0.9711538461538461, 'unique_ratio': 1.0, 'raw_shape': (456, 13), 'after_dropna_shape': (456, 13)}"
+      ]
+    },
+    {
+      "sheet": "DemEH (Case 2)",
+      "raw_shape": [
+        368,
+        12
+      ],
+      "chosen_header_row": 2,
+      "chosen_shape": [
+        365,
+        12
+      ],
+      "chosen_columns": [
+        "month",
+        "day",
+        "t (day N)",
+        "DemHeat",
+        "DemSteam",
+        "GenE",
+        "DemE (F - F*OwnUse%)",
+        "OwnUse",
+        "Temp.Out(Deg.C)",
+        "Heat load (MW)",
+        "Steam load (MW)",
+        "Electricity load (MW)"
+      ],
+      "unnamed_cols": 0,
+      "nonnull_cells_ratio": 1.0,
+      "notes": [
+        "raw_shape=(368, 12)",
+        "best_header_row=2, score=4.5000, meta={'unnamed': 0, 'nonnull_ratio': 1.0, 'unique_ratio': 1.0, 'raw_shape': (365, 12), 'after_dropna_shape': (365, 12)}"
+      ]
+    },
+    {
+      "sheet": "MaxMin (Case 1)",
+      "raw_shape": [
+        16,
+        6
+      ],
+      "chosen_header_row": 1,
+      "chosen_shape": [
+        14,
+        5
+      ],
+      "chosen_columns": [
+        "Bound",
+        "min",
+        "max",
+        "minMW(50%)",
+        "maxMW"
+      ],
+      "unnamed_cols": 0,
+      "nonnull_cells_ratio": 1.0,
+      "notes": [
+        "raw_shape=(16, 6)",
+        "best_header_row=1, score=4.4167, meta={'unnamed': 1, 'nonnull_ratio': 1.0, 'unique_ratio': 1.0, 'raw_shape': (14, 6), 'after_dropna_shape': (14, 5)}"
+      ]
+    },
+    {
+      "sheet": "MaxMin (Case 2)",
+      "raw_shape": [
+        16,
+        6
+      ],
+      "chosen_header_row": 1,
+      "chosen_shape": [
+        14,
+        5
+      ],
+      "chosen_columns": [
+        "Bound",
+        "min",
+        "max",
+        "minMW(50%)",
+        "maxMW"
+      ],
+      "unnamed_cols": 0,
+      "nonnull_cells_ratio": 1.0,
+      "notes": [
+        "raw_shape=(16, 6)",
+        "best_header_row=1, score=4.4167, meta={'unnamed': 1, 'nonnull_ratio': 1.0, 'unique_ratio': 1.0, 'raw_shape': (14, 6), 'after_dropna_shape': (14, 5)}"
+      ]
+    },
+    {
+      "sheet": "UnitEff (Case 1)",
+      "raw_shape": [
+        23,
+        15
+      ],
+      "chosen_header_row": 21,
+      "chosen_shape": [
+        1,
+        1
+      ],
+      "chosen_columns": [
+        "0.9.3"
+      ],
+      "unnamed_cols": 0,
+      "nonnull_cells_ratio": 1.0,
+      "notes": [
+        "raw_shape=(23, 15)",
+        "best_header_row=21, score=4.4333, meta={'unnamed': 2, 'nonnull_ratio': 1.0, 'unique_ratio': 1.0, 'raw_shape': (1, 15), 'after_dropna_shape': (1, 1)}"
+      ]
+    },
+    {
+      "sheet": "UnitEff (Case 2)",
+      "raw_shape": [
+        23,
+        15
+      ],
+      "chosen_header_row": 21,
+      "chosen_shape": [
+        1,
+        1
+      ],
+      "chosen_columns": [
+        "0.9.3"
+      ],
+      "unnamed_cols": 0,
+      "nonnull_cells_ratio": 1.0,
+      "notes": [
+        "raw_shape=(23, 15)",
+        "best_header_row=21, score=4.4333, meta={'unnamed': 2, 'nonnull_ratio': 1.0, 'unique_ratio': 1.0, 'raw_shape': (1, 15), 'after_dropna_shape': (1, 1)}"
+      ]
+    },
+    {
+      "sheet": "Turbine(MW)",
+      "raw_shape": [
+        39,
+        18
+      ],
+      "chosen_header_row": 23,
+      "chosen_shape": [
+        15,
+        7
+      ],
+      "chosen_columns": [
+        "Unnamed: 0",
+        "2.33594",
+        "8.26756",
+        "39.706",
+        "69.6795",
+        "101.018",
+        "171.034"
+      ],
+      "unnamed_cols": 1,
+      "nonnull_cells_ratio": 0.8761904761904762,
+      "notes": [
+        "raw_shape=(39, 18)",
+        "best_header_row=23, score=3.9897, meta={'unnamed': 5, 'nonnull_ratio': 0.8761904761904762, 'unique_ratio': 1.0, 'raw_shape': (15, 18), 'after_dropna_shape': (15, 7)}"
+      ]
+    }
+  ],
+  "out_raw_dir": "C:/work/smartcities_chp_pv_sim/data/interim/kaz_chpp_v3/raw_sheets",
+  "out_auto_dir": "C:/work/smartcities_chp_pv_sim/data/interim/kaz_chpp_v3/auto_tables"
+}

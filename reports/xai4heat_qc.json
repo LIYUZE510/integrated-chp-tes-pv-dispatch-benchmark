@@ -1,0 +1,419 @@
+{
+  "dataset": {
+    "name": "XAI4HEAT SCADA Dataset 2024",
+    "doi": "10.17632/2mwc6x6kwb.1",
+    "url": "https://data.mendeley.com/datasets/2mwc6x6kwb/1",
+    "license": "CC BY 4.0",
+    "note_datetime": "Recorded as local time (CET/CEST) without timezone info per dataset paper."
+  },
+  "created_utc": "2026-02-24T02:57:54.883442+00:00",
+  "raw_manifest": {
+    "filename": "XAI4HEAT SCADA Dataset 2024.zip",
+    "size_bytes": 934402,
+    "sha256": "4cee8313fa7c66cdff3e6e928ce28a53f205a06b91c79e215bcd6ec6be618aed"
+  },
+  "stations": [
+    {
+      "substation_id": "L12",
+      "file": "xai4heat_scada_L12_processed.csv",
+      "n_rows_total": 10877,
+      "start": "2021-11-01 07:00:00",
+      "end": "2024-03-31 23:00:00",
+      "duplicate_timestamps": 0,
+      "n_columns_raw": 7,
+      "columns_raw": [
+        "delta_e",
+        "t_amb",
+        "t_ref",
+        "t_ret_prim",
+        "t_ret_sec",
+        "t_sup_prim",
+        "t_sup_sec"
+      ],
+      "columns_missing_expected": [],
+      "columns_extra": [],
+      "na_counts": {
+        "datetime_local": 0,
+        "substation_id": 0,
+        "t_amb": 0,
+        "t_ref": 0,
+        "t_sup_prim": 0,
+        "t_ret_prim": 0,
+        "t_sup_sec": 0,
+        "t_ret_sec": 0,
+        "delta_e": 0,
+        "heating_area_m2": 0,
+        "heating_season": 0
+      },
+      "negative_delta_e_rows": 0,
+      "seasons": [
+        {
+          "heating_season": 2021,
+          "start": "2021-11-01 07:00:00",
+          "end": "2022-03-31 23:00:00",
+          "n_rows": 3617,
+          "expected_rows_if_continuous": 3617,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2022,
+          "start": "2022-11-01 06:00:00",
+          "end": "2023-03-31 23:00:00",
+          "n_rows": 3618,
+          "expected_rows_if_continuous": 3618,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2023,
+          "start": "2023-11-01 06:00:00",
+          "end": "2024-03-31 23:00:00",
+          "n_rows": 3642,
+          "expected_rows_if_continuous": 3642,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        }
+      ]
+    },
+    {
+      "substation_id": "L17",
+      "file": "xai4heat_scada_L17_processed.csv",
+      "n_rows_total": 18137,
+      "start": "2019-11-01 07:00:00",
+      "end": "2024-03-31 23:00:00",
+      "duplicate_timestamps": 0,
+      "n_columns_raw": 7,
+      "columns_raw": [
+        "delta_e",
+        "t_amb",
+        "t_ref",
+        "t_ret_prim",
+        "t_ret_sec",
+        "t_sup_prim",
+        "t_sup_sec"
+      ],
+      "columns_missing_expected": [],
+      "columns_extra": [],
+      "na_counts": {
+        "datetime_local": 0,
+        "substation_id": 0,
+        "t_amb": 0,
+        "t_ref": 0,
+        "t_sup_prim": 0,
+        "t_ret_prim": 0,
+        "t_sup_sec": 0,
+        "t_ret_sec": 0,
+        "delta_e": 0,
+        "heating_area_m2": 0,
+        "heating_season": 0
+      },
+      "negative_delta_e_rows": 0,
+      "seasons": [
+        {
+          "heating_season": 2019,
+          "start": "2019-11-01 07:00:00",
+          "end": "2020-03-31 23:00:00",
+          "n_rows": 3641,
+          "expected_rows_if_continuous": 3641,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2020,
+          "start": "2020-11-01 06:00:00",
+          "end": "2021-03-31 23:00:00",
+          "n_rows": 3618,
+          "expected_rows_if_continuous": 3618,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2021,
+          "start": "2021-11-01 06:00:00",
+          "end": "2022-03-31 23:00:00",
+          "n_rows": 3618,
+          "expected_rows_if_continuous": 3618,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2022,
+          "start": "2022-11-01 06:00:00",
+          "end": "2023-03-31 23:00:00",
+          "n_rows": 3618,
+          "expected_rows_if_continuous": 3618,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2023,
+          "start": "2023-11-01 06:00:00",
+          "end": "2024-03-31 23:00:00",
+          "n_rows": 3642,
+          "expected_rows_if_continuous": 3642,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        }
+      ]
+    },
+    {
+      "substation_id": "L22",
+      "file": "xai4heat_scada_L22_processed.csv",
+      "n_rows_total": 10877,
+      "start": "2021-11-01 07:00:00",
+      "end": "2024-03-31 23:00:00",
+      "duplicate_timestamps": 0,
+      "n_columns_raw": 7,
+      "columns_raw": [
+        "delta_e",
+        "t_amb",
+        "t_ref",
+        "t_ret_prim",
+        "t_ret_sec",
+        "t_sup_prim",
+        "t_sup_sec"
+      ],
+      "columns_missing_expected": [],
+      "columns_extra": [],
+      "na_counts": {
+        "datetime_local": 0,
+        "substation_id": 0,
+        "t_amb": 0,
+        "t_ref": 0,
+        "t_sup_prim": 0,
+        "t_ret_prim": 0,
+        "t_sup_sec": 0,
+        "t_ret_sec": 0,
+        "delta_e": 0,
+        "heating_area_m2": 0,
+        "heating_season": 0
+      },
+      "negative_delta_e_rows": 0,
+      "seasons": [
+        {
+          "heating_season": 2021,
+          "start": "2021-11-01 07:00:00",
+          "end": "2022-03-31 23:00:00",
+          "n_rows": 3617,
+          "expected_rows_if_continuous": 3617,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2022,
+          "start": "2022-11-01 06:00:00",
+          "end": "2023-03-31 23:00:00",
+          "n_rows": 3618,
+          "expected_rows_if_continuous": 3618,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2023,
+          "start": "2023-11-01 06:00:00",
+          "end": "2024-03-31 23:00:00",
+          "n_rows": 3642,
+          "expected_rows_if_continuous": 3642,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        }
+      ]
+    },
+    {
+      "substation_id": "L4",
+      "file": "xai4heat_scada_L4_processed.csv",
+      "n_rows_total": 18101,
+      "start": "2019-11-02 19:00:00",
+      "end": "2024-03-31 23:00:00",
+      "duplicate_timestamps": 0,
+      "n_columns_raw": 7,
+      "columns_raw": [
+        "delta_e",
+        "t_amb",
+        "t_ref",
+        "t_ret_prim",
+        "t_ret_sec",
+        "t_sup_prim",
+        "t_sup_sec"
+      ],
+      "columns_missing_expected": [],
+      "columns_extra": [],
+      "na_counts": {
+        "datetime_local": 0,
+        "substation_id": 0,
+        "t_amb": 0,
+        "t_ref": 0,
+        "t_sup_prim": 0,
+        "t_ret_prim": 0,
+        "t_sup_sec": 0,
+        "t_ret_sec": 0,
+        "delta_e": 0,
+        "heating_area_m2": 0,
+        "heating_season": 0
+      },
+      "negative_delta_e_rows": 0,
+      "seasons": [
+        {
+          "heating_season": 2019,
+          "start": "2019-11-02 19:00:00",
+          "end": "2020-03-31 23:00:00",
+          "n_rows": 3605,
+          "expected_rows_if_continuous": 3605,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2020,
+          "start": "2020-11-01 06:00:00",
+          "end": "2021-03-31 23:00:00",
+          "n_rows": 3618,
+          "expected_rows_if_continuous": 3618,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2021,
+          "start": "2021-11-01 06:00:00",
+          "end": "2022-03-31 23:00:00",
+          "n_rows": 3618,
+          "expected_rows_if_continuous": 3618,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2022,
+          "start": "2022-11-01 06:00:00",
+          "end": "2023-03-31 23:00:00",
+          "n_rows": 3618,
+          "expected_rows_if_continuous": 3618,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2023,
+          "start": "2023-11-01 06:00:00",
+          "end": "2024-03-31 23:00:00",
+          "n_rows": 3642,
+          "expected_rows_if_continuous": 3642,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        }
+      ]
+    },
+    {
+      "substation_id": "L8",
+      "file": "xai4heat_scada_L8_processed.csv",
+      "n_rows_total": 10877,
+      "start": "2021-11-01 07:00:00",
+      "end": "2024-03-31 23:00:00",
+      "duplicate_timestamps": 0,
+      "n_columns_raw": 7,
+      "columns_raw": [
+        "delta_e",
+        "t_amb",
+        "t_ref",
+        "t_ret_prim",
+        "t_ret_sec",
+        "t_sup_prim",
+        "t_sup_sec"
+      ],
+      "columns_missing_expected": [],
+      "columns_extra": [],
+      "na_counts": {
+        "datetime_local": 0,
+        "substation_id": 0,
+        "t_amb": 0,
+        "t_ref": 0,
+        "t_sup_prim": 0,
+        "t_ret_prim": 0,
+        "t_sup_sec": 0,
+        "t_ret_sec": 0,
+        "delta_e": 0,
+        "heating_area_m2": 0,
+        "heating_season": 0
+      },
+      "negative_delta_e_rows": 0,
+      "seasons": [
+        {
+          "heating_season": 2021,
+          "start": "2021-11-01 07:00:00",
+          "end": "2022-03-31 23:00:00",
+          "n_rows": 3617,
+          "expected_rows_if_continuous": 3617,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2022,
+          "start": "2022-11-01 06:00:00",
+          "end": "2023-03-31 23:00:00",
+          "n_rows": 3618,
+          "expected_rows_if_continuous": 3618,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        },
+        {
+          "heating_season": 2023,
+          "start": "2023-11-01 06:00:00",
+          "end": "2024-03-31 23:00:00",
+          "n_rows": 3642,
+          "expected_rows_if_continuous": 3642,
+          "missing_hours": 0,
+          "non_1h_steps": 0,
+          "min_step": "0 days 01:00:00",
+          "max_step": "0 days 01:00:00"
+        }
+      ]
+    }
+  ],
+  "combined": {
+    "n_rows": 68869,
+    "n_columns": 11,
+    "start": "2019-11-01 07:00:00",
+    "end": "2024-03-31 23:00:00",
+    "substations": [
+      "L12",
+      "L17",
+      "L22",
+      "L4",
+      "L8"
+    ]
+  }
+}

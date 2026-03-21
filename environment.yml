@@ -1,0 +1,20 @@
+name: chp_tes_pv_dispatch
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - tqdm
+  - requests
+  - scipy
+  - matplotlib
+  - jupyterlab
+  - numpy
+  - pandas
+  - pyyaml
+  - ipykernel
+  - pyarrow
+  - highspy
+  - pyomo
+  - pvlib-python
+  - xlrd

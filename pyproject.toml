@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chp-tes-pv-dispatch-benchmark"
+version = "0.2.0"
+description = "Public-data benchmark for integrated CHP-TES-PV dispatch under grid export constraints."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Yuze Li"},
+  {name = "Mingjing Ju"},
+  {name = "Zhuocheng Fang"},
+  {name = "Jingran Shi"},
+]
+dependencies = [
+  "numpy",
+  "pandas",
+  "scipy",
+  "matplotlib",
+  "pyomo",
+  "highspy",
+  "pvlib",
+  "pyyaml",
+  "tqdm",
+  "requests",
+  "pyarrow",
+  "xlrd",
+]
+keywords = [
+  "district heating",
+  "combined heat and power",
+  "thermal energy storage",
+  "MILP",
+  "MPC",
+  "PV",
+  "benchmark",
+  "public data",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.urls]
+Homepage = "https://github.com/LIYUZE510/integrated-chp-tes-pv-dispatch-benchmark"
+Repository = "https://github.com/LIYUZE510/integrated-chp-tes-pv-dispatch-benchmark"
+Issues = "https://github.com/LIYUZE510/integrated-chp-tes-pv-dispatch-benchmark/issues"
+Releases = "https://github.com/LIYUZE510/integrated-chp-tes-pv-dispatch-benchmark/releases"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra"

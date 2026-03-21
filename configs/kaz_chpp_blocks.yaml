@@ -1,0 +1,40 @@
+dataset: kaz_chpp_v3
+raw_sheets_dir: data/interim/kaz_chpp_v3/raw_sheets
+out_blocks_dir: data/interim/kaz_chpp_v3/blocks
+
+blocks:
+  # ---- Unit efficiencies (Case 1) ----
+  - raw_file: UnitEff_Case_1.csv
+    block_name: unit_eff_main
+    excel_range: B1:O16
+
+  - raw_file: UnitEff_Case_1.csv
+    block_name: rhoM_bounds
+    excel_range: C19:O22
+
+  # ---- Unit efficiencies (Case 2) ----
+  - raw_file: UnitEff_Case_2.csv
+    block_name: unit_eff_main
+    excel_range: B1:O16
+
+  - raw_file: UnitEff_Case_2.csv
+    block_name: rhoM_bounds
+    excel_range: C19:O22
+
+  # ---- Turbine coefficients ----
+  - raw_file: Turbine_MW.csv
+    block_name: heat_vs_steam_coeff
+    excel_range: A1:G39
+
+  - raw_file: Turbine_MW.csv
+    block_name: power_vs_steam_coeff
+    excel_range: J1:P24
+
+  # ---- Nomenclature text blocks (keep for documentation) ----
+  - raw_file: Turbine_MW.csv
+    block_name: nomenclature_1
+    excel_range: R5:R12
+
+  - raw_file: Turbine_MW.csv
+    block_name: nomenclature_2
+    excel_range: R14:R16

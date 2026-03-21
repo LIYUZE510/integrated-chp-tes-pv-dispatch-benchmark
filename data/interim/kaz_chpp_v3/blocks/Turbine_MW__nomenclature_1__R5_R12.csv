@@ -1,0 +1,9 @@
+﻿excel_row,R
+5,Nomenclatures Description
+6,lb = lower bound
+7,ub = upper bound
+8,x = E
+9,y = H
+10,z = Q
+11,H = k_HQ*Q + b_HQ
+12,E = k_EH*Q + b_EH

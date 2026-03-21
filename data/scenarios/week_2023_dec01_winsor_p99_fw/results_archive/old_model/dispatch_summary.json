@@ -1,0 +1,51 @@
+{
+  "created_utc": "2026-02-25T02:21:25.873908+00:00",
+  "scenario": {
+    "scenario": "week_2023_dec01",
+    "n_hours": 168,
+    "storage_s_max_mwh": 800.0,
+    "storage_p_ch_max_mw": 200.0,
+    "storage_p_dis_max_mw": 200.0,
+    "eta_ch": 0.95,
+    "eta_dis": 0.95,
+    "loss_per_hour": 0.001,
+    "s_init_mwh": 200.0,
+    "price_e": 50.0,
+    "cost_q": 15.0,
+    "cost_boiler": 60.0,
+    "cost_dump": 5.0,
+    "penalty_under": 1000000.0,
+    "cycle_cost": 0.01,
+    "time_limit_s": 900.0,
+    "mip_rel_gap": 0.2,
+    "tee": true
+  },
+  "solver": {
+    "status": "aborted",
+    "termination": "maxTimeLimit",
+    "objective": -158338.03395587616
+  },
+  "totals": {
+    "heat_demand_mwh": 11196.43255393151,
+    "H_chp_mwh": 11816.242251689986,
+    "E_chp_mwh": 6344.334105684958,
+    "boiler_mwh": 558.7557441397728,
+    "dump_mwh": 735.4428239911567,
+    "under_mwh": 0.0
+  },
+  "storage": {
+    "S_min": 50.063467337050646,
+    "S_max": 800.0,
+    "S_end": 200.0,
+    "ch_total": 3867.174884046416,
+    "dis_total": 3424.0522661393234
+  },
+  "qc": {
+    "heat_balance_residual_abs_max": 1.4210854715202004e-14,
+    "hours_under_gt_0": 0,
+    "hours_dump_gt_0": 35,
+    "hours_boiler_gt_0": 1,
+    "hours_on": 155,
+    "hours_off": 13
+  }
+}

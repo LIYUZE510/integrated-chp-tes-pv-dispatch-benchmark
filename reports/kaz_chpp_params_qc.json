@@ -1,0 +1,170 @@
+{
+  "created_utc": "2026-02-24T06:16:25.460654+00:00",
+  "outputs": {
+    "shared_heat_segments": "C:/work/smartcities_chp_pv_sim/data/processed/kaz_chpp_v3/shared/turbine_heat_segments.parquet",
+    "shared_power_segments": "C:/work/smartcities_chp_pv_sim/data/processed/kaz_chpp_v3/shared/turbine_power_segments.parquet",
+    "case1_dir": "C:/work/smartcities_chp_pv_sim/data/processed/kaz_chpp_v3/case1",
+    "case2_dir": "C:/work/smartcities_chp_pv_sim/data/processed/kaz_chpp_v3/case2"
+  },
+  "segments_heat_qc": {
+    "rows": 37,
+    "unique_temp_labels": [
+      "100C",
+      "110C",
+      "120C",
+      "125C",
+      "75C",
+      "90C"
+    ],
+    "axis": "H",
+    "max_abs_err": 1.3085999999999984,
+    "n_err_gt_tol": 14,
+    "tol_err": 0.001,
+    "max_abs_gap": 0.0,
+    "n_gap_gt_tol": 0,
+    "tol_gap": 1e-06,
+    "by_temp": [
+      {
+        "temp_label": "100C",
+        "segments": 6,
+        "h_min": 0.0,
+        "h_max": 171.656,
+        "q_min": 33.1034,
+        "q_max": 440.066
+      },
+      {
+        "temp_label": "110C",
+        "segments": 6,
+        "h_min": 0.0,
+        "h_max": 184.848,
+        "q_min": 38.358,
+        "q_max": 481.708
+      },
+      {
+        "temp_label": "120C",
+        "segments": 6,
+        "h_min": 0.0,
+        "h_max": 183.2885,
+        "q_min": 45.7143,
+        "q_max": 481.051
+      },
+      {
+        "temp_label": "125C",
+        "segments": 6,
+        "h_min": 0.0,
+        "h_max": 180.319,
+        "q_min": 49.6552,
+        "q_max": 476.059
+      },
+      {
+        "temp_label": "75C",
+        "segments": 7,
+        "h_min": 0.0,
+        "h_max": 186.1545,
+        "q_min": 23.908,
+        "q_max": 481.051
+      },
+      {
+        "temp_label": "90C",
+        "segments": 6,
+        "h_min": 0.0,
+        "h_max": 115.701,
+        "q_min": 28.5057,
+        "q_max": 284.532
+      }
+    ]
+  },
+  "segments_power_qc": {
+    "rows": 22,
+    "unique_temp_labels": [
+      "100C",
+      "110C",
+      "120C",
+      "125C",
+      "75C",
+      "90C",
+      "KOND"
+    ],
+    "axis": "E",
+    "max_abs_err": 48.03853200000003,
+    "n_err_gt_tol": 11,
+    "tol_err": 0.001,
+    "max_abs_gap": 137.93099999999998,
+    "n_gap_gt_tol": 2,
+    "tol_gap": 1e-06,
+    "by_temp": [
+      {
+        "temp_label": "100C",
+        "segments": 3,
+        "e_min": 0.0,
+        "e_max": 106.6631,
+        "q_min": 34.4171,
+        "q_max": 484.992
+      },
+      {
+        "temp_label": "110C",
+        "segments": 3,
+        "e_min": 0.0,
+        "e_max": 105.058,
+        "q_min": 37.8325,
+        "q_max": 485.78
+      },
+      {
+        "temp_label": "120C",
+        "segments": 3,
+        "e_min": 0.0,
+        "e_max": 99.7942,
+        "q_min": 45.5829,
+        "q_max": 484.729
+      },
+      {
+        "temp_label": "125C",
+        "segments": 2,
+        "e_min": 0.0,
+        "e_max": 97.0845,
+        "q_min": 49.5238,
+        "q_max": 484.729
+      },
+      {
+        "temp_label": "75C",
+        "segments": 3,
+        "e_min": 0.0,
+        "e_max": 115.7401,
+        "q_min": 26.0099,
+        "q_max": 485.123
+      },
+      {
+        "temp_label": "90C",
+        "segments": 4,
+        "e_min": 0.0,
+        "e_max": 102.604,
+        "q_min": 29.1626,
+        "q_max": 485.255
+      },
+      {
+        "temp_label": "KOND",
+        "segments": 4,
+        "e_min": 0.0,
+        "e_max": 120.339,
+        "q_min": 23.3826,
+        "q_max": 449.787
+      }
+    ]
+  },
+  "unit_eff_case1": {
+    "chp_eff_rows": 12,
+    "boiler_rows": 8,
+    "t_params_rows": 2,
+    "rhom_rows": 12
+  },
+  "unit_eff_case2": {
+    "chp_eff_rows": 12,
+    "boiler_rows": 8,
+    "t_params_rows": 2,
+    "rhom_rows": 12
+  },
+  "notes_units": [
+    "Sheet name 'Turbine(MW)' indicates E/H segment values are in MW-scale. In hourly simulation (Δt=1h), MW and MWh/h are numerically equivalent.",
+    "Q is labeled as inlet steam energy; we keep it in dataset units and do not convert at this stage."
+  ]
+}

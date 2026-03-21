@@ -1,0 +1,37 @@
+{
+  "created_utc": "2026-02-25T06:43:08.955332+00:00",
+  "pv_profile": {
+    "scenario": "week_2023_dec01",
+    "lat": 55.6761,
+    "lon": 12.5683,
+    "utc_offset_hours": 1.0,
+    "tilt_deg": 35.0,
+    "azimuth_deg": 180.0,
+    "albedo": 0.2,
+    "pv_dc_mw": 120.0,
+    "pv_ac_mw": 100.0,
+    "gamma_pdc_per_c": -0.003,
+    "inv_eff": 0.96,
+    "nasa_params": [
+      "ALLSKY_SFC_SW_DWN",
+      "ALLSKY_SFC_SW_DNI",
+      "ALLSKY_SFC_SW_DIFF",
+      "T2M",
+      "WS10M"
+    ],
+    "nasa_time_standard": "UTC",
+    "nasa_url": "https://power.larc.nasa.gov/api/temporal/hourly/point?parameters=ALLSKY_SFC_SW_DWN,ALLSKY_SFC_SW_DNI,ALLSKY_SFC_SW_DIFF,T2M,WS10M&community=SB&longitude=12.5683&latitude=55.6761&start=20231130&end=20231207&format=JSON&time-standard=UTC"
+  },
+  "outputs": {
+    "pv_parquet": "data/scenarios/week_2023_dec01/pv.parquet"
+  },
+  "stats": {
+    "pv_ac_mw": {
+      "min": 0.0,
+      "p50": 0.0,
+      "p99": 7.579549551798201,
+      "max": 8.120472618791085,
+      "energy_mwh": 219.0542730965845
+    }
+  }
+}

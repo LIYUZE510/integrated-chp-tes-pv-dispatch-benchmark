@@ -1,0 +1,12 @@
+{
+  "method": "winsorize_scaled_p99_from_existing_scenario",
+  "source_scenario": "week_2023_dec01",
+  "threshold_mw": 158.23132499999997,
+  "old_max_mw": 944.9102441397728,
+  "n_changed_hours": 2,
+  "changed_hours": [
+    "2023-12-01 08:00",
+    "2023-12-05 07:00"
+  ],
+  "created_utc": "2026-03-17T12:56:51.323017+00:00"
+}

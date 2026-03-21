@@ -1,0 +1,9 @@
+{
+  "scenario_name": "week_2023_dec01_anchor48h_fw",
+  "derived_from": "week_2023_dec01",
+  "selection_rule": "highest total heat demand over 48 consecutive hours",
+  "horizon_hours": 48,
+  "start_datetime_local": "2023-12-03 08:00:00",
+  "end_datetime_local": "2023-12-05 07:00:00",
+  "n_rows": 48
+}

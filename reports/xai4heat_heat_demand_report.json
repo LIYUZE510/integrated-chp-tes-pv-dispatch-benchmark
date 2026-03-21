@@ -1,0 +1,50 @@
+{
+  "created_utc": "2026-02-24T03:39:43.367671+00:00",
+  "input": {
+    "path": "C:\\work\\smartcities_chp_pv_sim\\data\\processed\\xai4heat_scada_hourly.parquet",
+    "rows": 68869,
+    "cols": 14
+  },
+  "substation_output": {
+    "path": "C:\\work\\smartcities_chp_pv_sim\\data\\processed\\xai4heat_heat_demand_substation_hourly.parquet",
+    "rows": 68869,
+    "cols": 13
+  },
+  "aggregate_output": {
+    "path": "C:\\work\\smartcities_chp_pv_sim\\data\\processed\\xai4heat_heat_demand_aggregate_hourly.parquet",
+    "rows": 18137,
+    "cols": 7
+  },
+  "coverage": {
+    "start": "2019-11-01 07:00:00",
+    "end": "2024-03-31 23:00:00",
+    "substations": [
+      "L12",
+      "L17",
+      "L22",
+      "L4",
+      "L8"
+    ],
+    "heating_seasons": [
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ]
+  },
+  "sanity": {
+    "negative_delta_e_rows": 0,
+    "nonpositive_area_rows": 0
+  },
+  "stats": {
+    "heat_mwh_hourly": {
+      "min": 0.0,
+      "p01": 0.0,
+      "median": 0.14,
+      "p99": 0.53,
+      "max": 178.36,
+      "mean": 0.1621990452888818
+    }
+  }
+}
