@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -65,6 +66,7 @@ class CommitmentSection:
 @dataclass
 class SolverSection:
     time_limit_s: float = 900.0
+    # Fractional relative MIP gap: 0.2 = 20%, 0.02 = 2%, 0.002 = 0.2%.
     mip_rel_gap: float = 0.2
     tee: bool = False
 
@@ -142,10 +144,24 @@ class ExperimentConfig:
             raise ValueError("storage.s_max_mwh must be positive")
         if self.storage.p_ch_max_mw < 0 or self.storage.p_dis_max_mw < 0:
             raise ValueError("storage charge/discharge power limits must be non-negative")
-        if self.solver.time_limit_s <= 0:
+        try:
+            self.solver.time_limit_s = float(self.solver.time_limit_s)
+        except Exception as exc:
+            raise ValueError("solver.time_limit_s must be a finite positive number") from exc
+        if not math.isfinite(self.solver.time_limit_s) or self.solver.time_limit_s <= 0:
             raise ValueError("solver.time_limit_s must be positive")
-        if self.solver.mip_rel_gap < 0:
-            raise ValueError("solver.mip_rel_gap must be non-negative")
+        try:
+            self.solver.mip_rel_gap = float(self.solver.mip_rel_gap)
+        except Exception as exc:
+            raise ValueError(
+                "solver.mip_rel_gap must be a finite fraction in [0, 1] "
+                "(0.2 = 20%, 0.02 = 2%, 0.002 = 0.2%)"
+            ) from exc
+        if not math.isfinite(self.solver.mip_rel_gap) or not (0.0 <= self.solver.mip_rel_gap <= 1.0):
+            raise ValueError(
+                "solver.mip_rel_gap must be a finite fraction in [0, 1] "
+                "(0.2 = 20%, 0.02 = 2%, 0.002 = 0.2%)"
+            )
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

@@ -61,7 +61,7 @@ def test_objective_sense_and_bound_sign_interpretation_with_synthetic_results() 
     assert min_interp["relative_gap_fraction_from_pyomo_bounds"] == pytest.approx(0.2)
 
 
-def test_solver_metrics_mismatch_is_flagged_for_maximize_synthetic_case() -> None:
+def test_solver_metrics_match_maximize_synthetic_case() -> None:
     results = _Results(_Problem(lower_bound=75.0, upper_bound=79.0, sense="maximize"))
     diagnostics = audit.extract_solver_diagnostics(results, wallclock_s=0.1, objective_value=75.0)
     highspy_fields = {
@@ -75,13 +75,15 @@ def test_solver_metrics_mismatch_is_flagged_for_maximize_synthetic_case() -> Non
 
     comparison = audit.compare_solver_metrics_to_raw(diagnostics, highspy_fields, interpreted)
 
-    assert diagnostics["best_feasible_objective"] == pytest.approx(79.0)
-    assert diagnostics["best_objective_bound"] == pytest.approx(75.0)
-    assert diagnostics["achieved_gap_rel"] == pytest.approx(4.0 / 79.0)
-    assert comparison["matches_highspy_incumbent"] is False
-    assert comparison["matches_highspy_best_bound"] is False
-    assert comparison["matches_highspy_gap"] is False
-    assert any("objective sense" in issue for issue in comparison["issues"])
+    assert diagnostics["best_feasible_objective"] == pytest.approx(75.0)
+    assert diagnostics["best_objective_bound"] == pytest.approx(79.0)
+    assert diagnostics["achieved_gap_rel"] == pytest.approx(4.0 / 75.0)
+    assert diagnostics["achieved_gap_rel_fraction"] == pytest.approx(4.0 / 75.0)
+    assert diagnostics["achieved_gap_percent"] == pytest.approx(100.0 * 4.0 / 75.0)
+    assert comparison["matches_highspy_incumbent"] is True
+    assert comparison["matches_highspy_best_bound"] is True
+    assert comparison["matches_highspy_gap"] is True
+    assert comparison["issues"] == []
 
 
 def test_audit_does_not_write_to_frozen_output_paths() -> None:

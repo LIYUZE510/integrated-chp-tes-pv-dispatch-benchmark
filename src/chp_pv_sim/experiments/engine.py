@@ -351,7 +351,38 @@ def _extract_dispatch_rows(
     return out
 
 
-def _solve_model(model: pyo.ConcreteModel, *, time_limit_s: float, mip_rel_gap: float, tee: bool) -> tuple[Any, float]:
+def _model_objective_sense(model: pyo.ConcreteModel) -> str | None:
+    active = list(model.component_data_objects(pyo.Objective, active=True))
+    if not active:
+        return None
+    if active[0].sense == pyo.maximize:
+        return "maximize"
+    if active[0].sense == pyo.minimize:
+        return "minimize"
+    return str(active[0].sense)
+
+
+def _solver_diagnostic_fields(solver_diag: dict[str, Any]) -> dict[str, Any]:
+    keys = [
+        "objective_sense",
+        "incumbent_objective",
+        "best_bound_objective",
+        "achieved_gap_rel_fraction",
+        "achieved_gap_percent",
+        "requested_gap_rel_fraction",
+        "requested_gap_percent",
+        "diagnostic_source",
+        "gap_formula",
+        # Backward-compatible aliases with corrected semantics.
+        "achieved_gap_rel",
+        "best_feasible_objective",
+        "best_objective_bound",
+        "message",
+    ]
+    return {key: solver_diag.get(key) for key in keys}
+
+
+def _solve_model(model: pyo.ConcreteModel, *, time_limit_s: float, mip_rel_gap: float, tee: bool) -> tuple[Any, float, Any]:
     solver = pyo.SolverFactory("appsi_highs")
     solver = _configure_highs_solver(
         solver,
@@ -362,7 +393,7 @@ def _solve_model(model: pyo.ConcreteModel, *, time_limit_s: float, mip_rel_gap: 
     t0 = time.perf_counter()
     results = solver.solve(model, tee=bool(tee))
     wallclock_s = time.perf_counter() - t0
-    return results, wallclock_s
+    return results, wallclock_s, solver
 
 
 def _termination_ok(term: Any) -> bool:
@@ -575,7 +606,7 @@ def run_uc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
         meta,
     )
 
-    results, wallclock_s = _solve_model(
+    results, wallclock_s, solver = _solve_model(
         model,
         time_limit_s=float(cfg.solver.time_limit_s),
         mip_rel_gap=float(cfg.solver.mip_rel_gap),
@@ -600,7 +631,15 @@ def run_uc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
     except Exception:
         obj_val = float("nan")
 
-    solver_diag = extract_solver_diagnostics(results, wallclock_s=wallclock_s, objective_value=obj_val)
+    solver_diag = extract_solver_diagnostics(
+        results,
+        wallclock_s=wallclock_s,
+        objective_value=obj_val,
+        objective_sense=_model_objective_sense(model),
+        requested_gap_rel_fraction=float(cfg.solver.mip_rel_gap),
+        solver=solver,
+        model=model,
+    )
     economics = compute_realized_economics(dispatch, meta, solver_objective=obj_val)
 
     summary = {
@@ -616,10 +655,7 @@ def run_uc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
             "objective_system_cost_equivalent": (-obj_val if math.isfinite(obj_val) else None),
             "wallclock_s": solver_diag.get("wallclock_s"),
             "reported_runtime_s": solver_diag.get("reported_runtime_s"),
-            "achieved_gap_rel": solver_diag.get("achieved_gap_rel"),
-            "best_feasible_objective": solver_diag.get("best_feasible_objective"),
-            "best_objective_bound": solver_diag.get("best_objective_bound"),
-            "message": solver_diag.get("message"),
+            **_solver_diagnostic_fields(solver_diag),
         },
         "totals": {
             "heat_demand_mwh": float(dispatch["heat_demand_mw"].sum()),
@@ -672,10 +708,7 @@ def run_uc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
                 "objective_window": obj_val,
                 "wallclock_s": solver_diag.get("wallclock_s"),
                 "reported_runtime_s": solver_diag.get("reported_runtime_s"),
-                "achieved_gap_rel": solver_diag.get("achieved_gap_rel"),
-                "best_feasible_objective": solver_diag.get("best_feasible_objective"),
-                "best_objective_bound": solver_diag.get("best_objective_bound"),
-                "message": solver_diag.get("message"),
+                **_solver_diagnostic_fields(solver_diag),
             }
         ]
     )
@@ -747,7 +780,7 @@ def run_mpc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
         for t in range(min(must_off, horizon_len)):
             model.y_off[t].fix(1)
 
-        results, wallclock_s = _solve_model(
+        results, wallclock_s, solver = _solve_model(
             model,
             time_limit_s=float(cfg.solver.time_limit_s),
             mip_rel_gap=float(cfg.solver.mip_rel_gap),
@@ -776,7 +809,15 @@ def run_mpc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
             obj_val = float(pyo.value(model.obj))
         except Exception:
             obj_val = float("nan")
-        solver_diag = extract_solver_diagnostics(results, wallclock_s=wallclock_s, objective_value=obj_val)
+        solver_diag = extract_solver_diagnostics(
+            results,
+            wallclock_s=wallclock_s,
+            objective_value=obj_val,
+            objective_sense=_model_objective_sense(model),
+            requested_gap_rel_fraction=float(cfg.solver.mip_rel_gap),
+            solver=solver,
+            model=model,
+        )
 
         current_s0 = float(_val(model.S[step_len]))
         on_impl = [1 if _val(model.y_off[t]) < 0.5 else 0 for t in range(step_len)]
@@ -800,10 +841,7 @@ def run_mpc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
                 "objective_window": obj_val,
                 "wallclock_s": solver_diag.get("wallclock_s"),
                 "reported_runtime_s": solver_diag.get("reported_runtime_s"),
-                "achieved_gap_rel": solver_diag.get("achieved_gap_rel"),
-                "best_feasible_objective": solver_diag.get("best_feasible_objective"),
-                "best_objective_bound": solver_diag.get("best_objective_bound"),
-                "message": solver_diag.get("message"),
+                **_solver_diagnostic_fields(solver_diag),
             }
         )
 
@@ -826,7 +864,14 @@ def run_mpc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
     wallclock_vals = [float(x) for x in windows_df["wallclock_s"].dropna().tolist()] if not windows_df.empty else []
     runtime_vals = [float(x) for x in windows_df["reported_runtime_s"].dropna().tolist()] if not windows_df.empty else []
     gap_vals = [float(x) for x in windows_df["achieved_gap_rel"].dropna().tolist()] if not windows_df.empty else []
+    gap_percent_vals = [float(x) for x in windows_df["achieved_gap_percent"].dropna().tolist()] if not windows_df.empty else []
     term_counts = windows_df["termination"].value_counts(dropna=False).to_dict() if not windows_df.empty else {}
+    objective_senses = sorted(set(map(str, windows_df["objective_sense"].dropna().tolist()))) if not windows_df.empty else []
+    diagnostic_sources = (
+        windows_df["diagnostic_source"].value_counts(dropna=False).astype(int).to_dict()
+        if not windows_df.empty and "diagnostic_source" in windows_df.columns
+        else {}
+    )
     window_objective_sum = float(np.nansum(windows_df["objective_window"].to_numpy(dtype=float))) if not windows_df.empty else float("nan")
 
     final_mode = _resolve_last_window_terminal_mode(cfg)
@@ -860,10 +905,20 @@ def run_mpc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
             "objective_system_cost_equivalent": float(economics["system_cost_realized"]),
             "objective_window_sum_profit_like": float(window_objective_sum),
             "objective_window_sum_not_comparable": True,
+            "objective_sense": objective_senses[0] if len(objective_senses) == 1 else objective_senses,
+            "requested_gap_rel_fraction": float(cfg.solver.mip_rel_gap),
+            "requested_gap_percent": 100.0 * float(cfg.solver.mip_rel_gap),
             "wallclock_s_total": (float(sum(wallclock_vals)) if wallclock_vals else None),
             "reported_runtime_s_total": (float(sum(runtime_vals)) if runtime_vals else None),
             "achieved_gap_rel_max": (float(max(gap_vals)) if gap_vals else None),
             "achieved_gap_rel_mean": (float(sum(gap_vals) / len(gap_vals)) if gap_vals else None),
+            "achieved_gap_rel_fraction_max": (float(max(gap_vals)) if gap_vals else None),
+            "achieved_gap_rel_fraction_mean": (float(sum(gap_vals) / len(gap_vals)) if gap_vals else None),
+            "achieved_gap_percent_max": (float(max(gap_percent_vals)) if gap_percent_vals else None),
+            "achieved_gap_percent_mean": (
+                float(sum(gap_percent_vals) / len(gap_percent_vals)) if gap_percent_vals else None
+            ),
+            "diagnostic_source_counts": diagnostic_sources,
             "window_termination_counts": term_counts,
         },
         "totals": {
