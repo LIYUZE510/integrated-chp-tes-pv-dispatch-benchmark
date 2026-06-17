@@ -43,6 +43,31 @@ class RunArtifacts:
     validation: dict[str, Any]
 
 
+def ensure_no_existing_paths(paths: list[Path], *, context: str, overwrite: bool = False) -> None:
+    if overwrite:
+        return
+    conflicts = [Path(path) for path in paths if Path(path).exists()]
+    if not conflicts:
+        return
+    conflict_lines = "\n".join(f"  - {path}" for path in conflicts)
+    raise FileExistsError(
+        f"Refusing to overwrite existing {context} file(s):\n"
+        f"{conflict_lines}\n"
+        "Use --overwrite only when replacing these files is intentional."
+    )
+
+
+def experiment_artifact_paths(cfg: ExperimentConfig) -> list[Path]:
+    scen_dir = ROOT / "data" / "scenarios" / cfg.run.scenario
+    out_dir = scen_dir / "results"
+    return [
+        out_dir / f"dispatch_chp_storage_pv_grid__{cfg.run.tag}.parquet",
+        out_dir / f"dispatch_summary_pv_grid__{cfg.run.tag}.json",
+        out_dir / f"solver_windows_pv_grid__{cfg.run.tag}.csv",
+        out_dir / f"dispatch_validation_pv_grid__{cfg.run.tag}.json",
+    ]
+
+
 def _to_float_series(series: pd.Series, name: str) -> pd.Series:
     out = pd.to_numeric(series, errors="raise").astype(float)
     if out.isna().any():
@@ -499,16 +524,18 @@ def _write_artifacts(
     summary: dict[str, Any],
     windows_df: pd.DataFrame,
     validation: dict[str, Any],
+    overwrite: bool = False,
 ) -> RunArtifacts:
     scen_dir = ROOT / "data" / "scenarios" / cfg.run.scenario
     out_dir = scen_dir / "results"
+    dispatch_path, summary_path, windows_path, validation_path = experiment_artifact_paths(cfg)
+    ensure_no_existing_paths(
+        [dispatch_path, summary_path, windows_path, validation_path],
+        context="experiment artifact",
+        overwrite=overwrite,
+    )
+
     out_dir.mkdir(parents=True, exist_ok=True)
-
-    dispatch_path = out_dir / f"dispatch_chp_storage_pv_grid__{cfg.run.tag}.parquet"
-    summary_path = out_dir / f"dispatch_summary_pv_grid__{cfg.run.tag}.json"
-    windows_path = out_dir / f"solver_windows_pv_grid__{cfg.run.tag}.csv"
-    validation_path = out_dir / f"dispatch_validation_pv_grid__{cfg.run.tag}.json"
-
     dispatch.to_parquet(dispatch_path, index=False, engine="pyarrow", compression="zstd")
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     windows_df.to_csv(windows_path, index=False, encoding="utf-8-sig")
@@ -524,7 +551,7 @@ def _write_artifacts(
     )
 
 
-def run_uc(cfg: ExperimentConfig) -> RunArtifacts:
+def run_uc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
     inputs = load_scenario_inputs(cfg)
     heat_seg, power_seg, temps = load_segments()
     terminal_target = _resolve_uc_terminal_target(cfg)
@@ -659,10 +686,11 @@ def run_uc(cfg: ExperimentConfig) -> RunArtifacts:
         summary=summary,
         windows_df=windows_df,
         validation=validation,
+        overwrite=overwrite,
     )
 
 
-def run_mpc(cfg: ExperimentConfig) -> RunArtifacts:
+def run_mpc(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
     inputs = load_scenario_inputs(cfg)
     heat_seg, power_seg, temps = load_segments()
     N = len(inputs.dt_index)
@@ -873,16 +901,22 @@ def run_mpc(cfg: ExperimentConfig) -> RunArtifacts:
         summary=summary,
         windows_df=windows_df,
         validation=validation,
+        overwrite=overwrite,
     )
 
 
-def run_experiment(cfg: ExperimentConfig) -> RunArtifacts:
+def run_experiment(cfg: ExperimentConfig, *, overwrite: bool = False) -> RunArtifacts:
     ensure_dirs()
     cfg.validate()
+    ensure_no_existing_paths(
+        experiment_artifact_paths(cfg),
+        context="experiment artifact",
+        overwrite=overwrite,
+    )
     if cfg.run.method == "uc":
-        artifacts = run_uc(cfg)
+        artifacts = run_uc(cfg, overwrite=overwrite)
     elif cfg.run.method == "mpc":
-        artifacts = run_mpc(cfg)
+        artifacts = run_mpc(cfg, overwrite=overwrite)
     else:
         raise ValueError(f"Unsupported method: {cfg.run.method}")
 
