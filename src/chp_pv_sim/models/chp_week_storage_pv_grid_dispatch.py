@@ -77,6 +77,33 @@ def _to_float_series(s: pd.Series, name: str) -> pd.Series:
     return out
 
 
+def _validate_finite_nonnegative_scalar(value: Any, name: str) -> float:
+    try:
+        out = float(value)
+    except Exception as exc:
+        raise ValueError(f"{name} must be finite and nonnegative; got {value!r}.") from exc
+    if not math.isfinite(out) or out < 0.0:
+        raise ValueError(f"{name} must be finite and nonnegative; got {value!r}.")
+    return out
+
+
+def _validate_finite_nonnegative_array(values: np.ndarray, name: str, index: pd.Index | None = None) -> None:
+    bad = np.flatnonzero((~np.isfinite(values)) | (values < 0.0))
+    if len(bad) == 0:
+        return
+    pos = int(bad[0])
+    label = pos
+    if index is not None:
+        try:
+            label = index[pos]
+        except Exception:
+            label = pos
+    raise ValueError(
+        f"{name} must contain only finite nonnegative values; "
+        f"invalid value at position {pos}, index {label!r}: {values[pos]!r}."
+    )
+
+
 def _configure_highs_solver(solver, *, time_limit_s: float, mip_rel_gap: float, output_flag: bool):
     """
     Robustly set HiGHS options for both legacy/appsi variants.
@@ -326,6 +353,8 @@ def build_model(
     demand = heat_demand_mw.to_numpy(dtype=float)
     pv_av = pv_avail_mw.to_numpy(dtype=float)
     eload = e_load_mw.to_numpy(dtype=float)
+    _validate_finite_nonnegative_array(eload, "e_load_mw", dt_index)
+    grid_export_cap_mw = _validate_finite_nonnegative_scalar(meta.grid_export_cap_mw, "grid_export_cap_mw")
 
     m = pyo.ConcreteModel("CHP_week_storage_PV_grid")
     m.TIME = pyo.Set(initialize=T)
@@ -400,10 +429,14 @@ def build_model(
     m.under = pyo.Var(m.TIME, domain=pyo.NonNegativeReals)
 
     # grid + PV curtail
-    m.grid_import = pyo.Var(m.TIME, domain=pyo.NonNegativeReals)
-    m.grid_export = pyo.Var(m.TIME, domain=pyo.NonNegativeReals, bounds=(0.0, meta.grid_export_cap_mw))
+    m.grid_import = pyo.Var(
+        m.TIME,
+        domain=pyo.NonNegativeReals,
+        bounds=lambda mm, t: (0.0, float(eload[t] + grid_export_cap_mw)),
+    )
+    m.grid_export = pyo.Var(m.TIME, domain=pyo.NonNegativeReals, bounds=(0.0, grid_export_cap_mw))
     m.pv_curt = pyo.Var(m.TIME, domain=pyo.NonNegativeReals)
-    m.chp_curt = pyo.Var(m.TIME, domain=pyo.NonNegativeReals)
+    m.chp_curt = pyo.Var(m.TIME, domain=pyo.NonNegativeReals, bounds=(0.0, E_max))
 
     # one mode
     m.one_mode = pyo.Constraint(
@@ -426,6 +459,10 @@ def build_model(
         m.TEMP,
         rule=lambda mm, t, tt: sum(mm.zE[t, (tt, s)] for s in ES_by_temp[tt]) == mm.y[t, tt],
     )
+
+    # Redundant formulation tightening from segment selection and commitment state.
+    m.zH_on_ub = pyo.Constraint(m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.zH[t, (tt, s)] <= mm.on[t])
+    m.zE_on_ub = pyo.Constraint(m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.zE[t, (tt, s)] <= mm.on[t])
 
     # heat segment constraints
     m.h_lb_con = pyo.Constraint(
@@ -451,6 +488,18 @@ def build_model(
         m.HS,
         rule=lambda mm, t, tt, s: mm.H[t] - (a_h[(tt, s)] * mm.Q[t] + c_h[(tt, s)])
         >= -M_eq_H * (1 - mm.zH[t, (tt, s)]),
+    )
+    m.h_seg_agg_lb = pyo.Constraint(
+        m.TIME, rule=lambda mm, t: mm.H[t] >= sum(h_lb[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
+    )
+    m.h_seg_agg_ub = pyo.Constraint(
+        m.TIME, rule=lambda mm, t: mm.H[t] <= sum(h_ub[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
+    )
+    m.q_heat_seg_agg_lb = pyo.Constraint(
+        m.TIME, rule=lambda mm, t: mm.Q[t] >= sum(qh_lb[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
+    )
+    m.q_heat_seg_agg_ub = pyo.Constraint(
+        m.TIME, rule=lambda mm, t: mm.Q[t] <= sum(qh_ub[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
     )
 
     # power segment constraints
@@ -478,6 +527,18 @@ def build_model(
         rule=lambda mm, t, tt, s: mm.E[t] - (a_e[(tt, s)] * mm.Q[t] + c_e[(tt, s)])
         >= -M_eq_E * (1 - mm.zE[t, (tt, s)]),
     )
+    m.e_seg_agg_lb = pyo.Constraint(
+        m.TIME, rule=lambda mm, t: mm.E[t] >= sum(e_lb[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
+    )
+    m.e_seg_agg_ub = pyo.Constraint(
+        m.TIME, rule=lambda mm, t: mm.E[t] <= sum(e_ub[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
+    )
+    m.q_power_seg_agg_lb = pyo.Constraint(
+        m.TIME, rule=lambda mm, t: mm.Q[t] >= sum(qe_lb[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
+    )
+    m.q_power_seg_agg_ub = pyo.Constraint(
+        m.TIME, rule=lambda mm, t: mm.Q[t] <= sum(qe_ub[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
+    )
 
     # storage exclusivity
     m.ch_mode = pyo.Constraint(m.TIME, rule=lambda mm, t: mm.ch[t] <= meta.storage_p_ch_max_mw * mm.u_ch[t])
@@ -504,6 +565,10 @@ def build_model(
 
     # CHP curtail <= E
     m.chp_curt_ub = pyo.Constraint(m.TIME, rule=lambda mm, t: mm.chp_curt[t] <= mm.E[t])
+    m.chp_curt_on_ub = pyo.Constraint(m.TIME, rule=lambda mm, t: mm.chp_curt[t] <= E_max * mm.on[t])
+    m.chp_curt_seg_ub = pyo.Constraint(
+        m.TIME, rule=lambda mm, t: mm.chp_curt[t] <= sum(e_ub[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
+    )
 
     # electricity balance
     m.elec_bal = pyo.Constraint(
@@ -512,6 +577,7 @@ def build_model(
         - mm.grid_export[t]
         == eload[t],
     )
+    m.grid_import_delivery_ub = pyo.Constraint(m.TIME, rule=lambda mm, t: mm.grid_import[t] <= eload[t] + mm.grid_export[t])
 
     # objective (profit-like)
     m.obj = pyo.Objective(
