@@ -263,6 +263,7 @@ def _build_meta(
         mip_rel_gap=float(cfg.solver.mip_rel_gap),
         tee=bool(cfg.solver.tee),
         terminal_soc_target_mwh=(None if terminal_soc_target_mwh is None else float(terminal_soc_target_mwh)),
+        chp_segment_formulation=str(cfg.formulation.chp_segments),
     )
 
 

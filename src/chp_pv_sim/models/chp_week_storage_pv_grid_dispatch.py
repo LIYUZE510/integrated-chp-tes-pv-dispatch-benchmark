@@ -19,6 +19,7 @@ from chp_pv_sim.models.solver_metrics import extract_solver_diagnostics
 
 SEG_HEAT = PROCESSED_DIR / "kaz_chpp_v3" / "shared" / "turbine_heat_segments_consistent.parquet"
 SEG_POWER = PROCESSED_DIR / "kaz_chpp_v3" / "shared" / "turbine_power_segments_consistent.parquet"
+VALID_CHP_SEGMENT_FORMULATIONS = {"legacy_big_m", "convex_hull"}
 
 
 @dataclass
@@ -64,6 +65,7 @@ class Meta:
     mip_rel_gap: float
     tee: bool
     terminal_soc_target_mwh: Optional[float] = None
+    chp_segment_formulation: str = "legacy_big_m"
 
 
 def _val(x) -> float:
@@ -355,8 +357,15 @@ def build_model(
     eload = e_load_mw.to_numpy(dtype=float)
     _validate_finite_nonnegative_array(eload, "e_load_mw", dt_index)
     grid_export_cap_mw = _validate_finite_nonnegative_scalar(meta.grid_export_cap_mw, "grid_export_cap_mw")
+    chp_segment_formulation = str(getattr(meta, "chp_segment_formulation", "legacy_big_m"))
+    if chp_segment_formulation not in VALID_CHP_SEGMENT_FORMULATIONS:
+        raise ValueError(
+            "chp_segment_formulation must be one of "
+            f"{sorted(VALID_CHP_SEGMENT_FORMULATIONS)}; got {chp_segment_formulation!r}."
+        )
 
     m = pyo.ConcreteModel("CHP_week_storage_PV_grid")
+    m.chp_segment_formulation = chp_segment_formulation
     m.TIME = pyo.Set(initialize=T)
     m.TEMP = pyo.Set(initialize=temps)
     m.HS = pyo.Set(initialize=HS, dimen=2)
@@ -464,81 +473,145 @@ def build_model(
     m.zH_on_ub = pyo.Constraint(m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.zH[t, (tt, s)] <= mm.on[t])
     m.zE_on_ub = pyo.Constraint(m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.zE[t, (tt, s)] <= mm.on[t])
 
-    # heat segment constraints
-    m.h_lb_con = pyo.Constraint(
-        m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.H[t] >= h_lb[(tt, s)] - M_H * (1 - mm.zH[t, (tt, s)])
-    )
-    m.h_ub_con = pyo.Constraint(
-        m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.H[t] <= h_ub[(tt, s)] + M_H * (1 - mm.zH[t, (tt, s)])
-    )
-    m.qh_lb_con = pyo.Constraint(
-        m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.Q[t] >= qh_lb[(tt, s)] - M_Q * (1 - mm.zH[t, (tt, s)])
-    )
-    m.qh_ub_con = pyo.Constraint(
-        m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.Q[t] <= qh_ub[(tt, s)] + M_Q * (1 - mm.zH[t, (tt, s)])
-    )
-    m.h_eq_ub = pyo.Constraint(
-        m.TIME,
-        m.HS,
-        rule=lambda mm, t, tt, s: mm.H[t] - (a_h[(tt, s)] * mm.Q[t] + c_h[(tt, s)])
-        <= M_eq_H * (1 - mm.zH[t, (tt, s)]),
-    )
-    m.h_eq_lb = pyo.Constraint(
-        m.TIME,
-        m.HS,
-        rule=lambda mm, t, tt, s: mm.H[t] - (a_h[(tt, s)] * mm.Q[t] + c_h[(tt, s)])
-        >= -M_eq_H * (1 - mm.zH[t, (tt, s)]),
-    )
-    m.h_seg_agg_lb = pyo.Constraint(
-        m.TIME, rule=lambda mm, t: mm.H[t] >= sum(h_lb[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
-    )
-    m.h_seg_agg_ub = pyo.Constraint(
-        m.TIME, rule=lambda mm, t: mm.H[t] <= sum(h_ub[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
-    )
-    m.q_heat_seg_agg_lb = pyo.Constraint(
-        m.TIME, rule=lambda mm, t: mm.Q[t] >= sum(qh_lb[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
-    )
-    m.q_heat_seg_agg_ub = pyo.Constraint(
-        m.TIME, rule=lambda mm, t: mm.Q[t] <= sum(qh_ub[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
-    )
+    if chp_segment_formulation == "legacy_big_m":
+        # heat segment constraints
+        m.h_lb_con = pyo.Constraint(
+            m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.H[t] >= h_lb[(tt, s)] - M_H * (1 - mm.zH[t, (tt, s)])
+        )
+        m.h_ub_con = pyo.Constraint(
+            m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.H[t] <= h_ub[(tt, s)] + M_H * (1 - mm.zH[t, (tt, s)])
+        )
+        m.qh_lb_con = pyo.Constraint(
+            m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.Q[t] >= qh_lb[(tt, s)] - M_Q * (1 - mm.zH[t, (tt, s)])
+        )
+        m.qh_ub_con = pyo.Constraint(
+            m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.Q[t] <= qh_ub[(tt, s)] + M_Q * (1 - mm.zH[t, (tt, s)])
+        )
+        m.h_eq_ub = pyo.Constraint(
+            m.TIME,
+            m.HS,
+            rule=lambda mm, t, tt, s: mm.H[t] - (a_h[(tt, s)] * mm.Q[t] + c_h[(tt, s)])
+            <= M_eq_H * (1 - mm.zH[t, (tt, s)]),
+        )
+        m.h_eq_lb = pyo.Constraint(
+            m.TIME,
+            m.HS,
+            rule=lambda mm, t, tt, s: mm.H[t] - (a_h[(tt, s)] * mm.Q[t] + c_h[(tt, s)])
+            >= -M_eq_H * (1 - mm.zH[t, (tt, s)]),
+        )
+        m.h_seg_agg_lb = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.H[t] >= sum(h_lb[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
+        )
+        m.h_seg_agg_ub = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.H[t] <= sum(h_ub[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
+        )
+        m.q_heat_seg_agg_lb = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.Q[t] >= sum(qh_lb[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
+        )
+        m.q_heat_seg_agg_ub = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.Q[t] <= sum(qh_ub[(tt, s)] * mm.zH[t, (tt, s)] for (tt, s) in mm.HS)
+        )
 
-    # power segment constraints
-    m.e_lb_con = pyo.Constraint(
-        m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.E[t] >= e_lb[(tt, s)] - M_E * (1 - mm.zE[t, (tt, s)])
-    )
-    m.e_ub_con = pyo.Constraint(
-        m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.E[t] <= e_ub[(tt, s)] + M_E * (1 - mm.zE[t, (tt, s)])
-    )
-    m.qe_lb_con = pyo.Constraint(
-        m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.Q[t] >= qe_lb[(tt, s)] - M_Q * (1 - mm.zE[t, (tt, s)])
-    )
-    m.qe_ub_con = pyo.Constraint(
-        m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.Q[t] <= qe_ub[(tt, s)] + M_Q * (1 - mm.zE[t, (tt, s)])
-    )
-    m.e_eq_ub = pyo.Constraint(
-        m.TIME,
-        m.ES,
-        rule=lambda mm, t, tt, s: mm.E[t] - (a_e[(tt, s)] * mm.Q[t] + c_e[(tt, s)])
-        <= M_eq_E * (1 - mm.zE[t, (tt, s)]),
-    )
-    m.e_eq_lb = pyo.Constraint(
-        m.TIME,
-        m.ES,
-        rule=lambda mm, t, tt, s: mm.E[t] - (a_e[(tt, s)] * mm.Q[t] + c_e[(tt, s)])
-        >= -M_eq_E * (1 - mm.zE[t, (tt, s)]),
-    )
-    m.e_seg_agg_lb = pyo.Constraint(
-        m.TIME, rule=lambda mm, t: mm.E[t] >= sum(e_lb[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
-    )
-    m.e_seg_agg_ub = pyo.Constraint(
-        m.TIME, rule=lambda mm, t: mm.E[t] <= sum(e_ub[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
-    )
-    m.q_power_seg_agg_lb = pyo.Constraint(
-        m.TIME, rule=lambda mm, t: mm.Q[t] >= sum(qe_lb[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
-    )
-    m.q_power_seg_agg_ub = pyo.Constraint(
-        m.TIME, rule=lambda mm, t: mm.Q[t] <= sum(qe_ub[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
-    )
+        # power segment constraints
+        m.e_lb_con = pyo.Constraint(
+            m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.E[t] >= e_lb[(tt, s)] - M_E * (1 - mm.zE[t, (tt, s)])
+        )
+        m.e_ub_con = pyo.Constraint(
+            m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.E[t] <= e_ub[(tt, s)] + M_E * (1 - mm.zE[t, (tt, s)])
+        )
+        m.qe_lb_con = pyo.Constraint(
+            m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.Q[t] >= qe_lb[(tt, s)] - M_Q * (1 - mm.zE[t, (tt, s)])
+        )
+        m.qe_ub_con = pyo.Constraint(
+            m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.Q[t] <= qe_ub[(tt, s)] + M_Q * (1 - mm.zE[t, (tt, s)])
+        )
+        m.e_eq_ub = pyo.Constraint(
+            m.TIME,
+            m.ES,
+            rule=lambda mm, t, tt, s: mm.E[t] - (a_e[(tt, s)] * mm.Q[t] + c_e[(tt, s)])
+            <= M_eq_E * (1 - mm.zE[t, (tt, s)]),
+        )
+        m.e_eq_lb = pyo.Constraint(
+            m.TIME,
+            m.ES,
+            rule=lambda mm, t, tt, s: mm.E[t] - (a_e[(tt, s)] * mm.Q[t] + c_e[(tt, s)])
+            >= -M_eq_E * (1 - mm.zE[t, (tt, s)]),
+        )
+        m.e_seg_agg_lb = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.E[t] >= sum(e_lb[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
+        )
+        m.e_seg_agg_ub = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.E[t] <= sum(e_ub[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
+        )
+        m.q_power_seg_agg_lb = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.Q[t] >= sum(qe_lb[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
+        )
+        m.q_power_seg_agg_ub = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.Q[t] <= sum(qe_ub[(tt, s)] * mm.zE[t, (tt, s)] for (tt, s) in mm.ES)
+        )
+    else:
+        m.H_seg_hull = pyo.Var(
+            m.TIME, m.HS, domain=pyo.NonNegativeReals, bounds=lambda mm, t, tt, s: (0.0, h_ub[(tt, s)])
+        )
+        m.QH_seg_hull = pyo.Var(
+            m.TIME, m.HS, domain=pyo.NonNegativeReals, bounds=lambda mm, t, tt, s: (0.0, qh_ub[(tt, s)])
+        )
+        m.E_seg_hull = pyo.Var(
+            m.TIME, m.ES, domain=pyo.NonNegativeReals, bounds=lambda mm, t, tt, s: (0.0, e_ub[(tt, s)])
+        )
+        m.QE_seg_hull = pyo.Var(
+            m.TIME, m.ES, domain=pyo.NonNegativeReals, bounds=lambda mm, t, tt, s: (0.0, qe_ub[(tt, s)])
+        )
+
+        m.h_hull_lb = pyo.Constraint(
+            m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.H_seg_hull[t, (tt, s)] >= h_lb[(tt, s)] * mm.zH[t, (tt, s)]
+        )
+        m.h_hull_ub = pyo.Constraint(
+            m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.H_seg_hull[t, (tt, s)] <= h_ub[(tt, s)] * mm.zH[t, (tt, s)]
+        )
+        m.qh_hull_lb = pyo.Constraint(
+            m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.QH_seg_hull[t, (tt, s)] >= qh_lb[(tt, s)] * mm.zH[t, (tt, s)]
+        )
+        m.qh_hull_ub = pyo.Constraint(
+            m.TIME, m.HS, rule=lambda mm, t, tt, s: mm.QH_seg_hull[t, (tt, s)] <= qh_ub[(tt, s)] * mm.zH[t, (tt, s)]
+        )
+        m.h_hull_eq = pyo.Constraint(
+            m.TIME,
+            m.HS,
+            rule=lambda mm, t, tt, s: mm.H_seg_hull[t, (tt, s)]
+            == a_h[(tt, s)] * mm.QH_seg_hull[t, (tt, s)] + c_h[(tt, s)] * mm.zH[t, (tt, s)],
+        )
+        m.h_hull_agg = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.H[t] == sum(mm.H_seg_hull[t, (tt, s)] for (tt, s) in mm.HS)
+        )
+        m.q_heat_hull_agg = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.Q[t] == sum(mm.QH_seg_hull[t, (tt, s)] for (tt, s) in mm.HS)
+        )
+
+        m.e_hull_lb = pyo.Constraint(
+            m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.E_seg_hull[t, (tt, s)] >= e_lb[(tt, s)] * mm.zE[t, (tt, s)]
+        )
+        m.e_hull_ub = pyo.Constraint(
+            m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.E_seg_hull[t, (tt, s)] <= e_ub[(tt, s)] * mm.zE[t, (tt, s)]
+        )
+        m.qe_hull_lb = pyo.Constraint(
+            m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.QE_seg_hull[t, (tt, s)] >= qe_lb[(tt, s)] * mm.zE[t, (tt, s)]
+        )
+        m.qe_hull_ub = pyo.Constraint(
+            m.TIME, m.ES, rule=lambda mm, t, tt, s: mm.QE_seg_hull[t, (tt, s)] <= qe_ub[(tt, s)] * mm.zE[t, (tt, s)]
+        )
+        m.e_hull_eq = pyo.Constraint(
+            m.TIME,
+            m.ES,
+            rule=lambda mm, t, tt, s: mm.E_seg_hull[t, (tt, s)]
+            == a_e[(tt, s)] * mm.QE_seg_hull[t, (tt, s)] + c_e[(tt, s)] * mm.zE[t, (tt, s)],
+        )
+        m.e_hull_agg = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.E[t] == sum(mm.E_seg_hull[t, (tt, s)] for (tt, s) in mm.ES)
+        )
+        m.q_power_hull_agg = pyo.Constraint(
+            m.TIME, rule=lambda mm, t: mm.Q[t] == sum(mm.QE_seg_hull[t, (tt, s)] for (tt, s) in mm.ES)
+        )
 
     # storage exclusivity
     m.ch_mode = pyo.Constraint(m.TIME, rule=lambda mm, t: mm.ch[t] <= meta.storage_p_ch_max_mw * mm.u_ch[t])

@@ -12,6 +12,7 @@ VALID_METHODS = {"uc", "mpc"}
 VALID_UC_TERMINAL_MODES = {"match_initial", "free"}
 VALID_ROLLING_TERMINAL_MODES = {"match_window_initial", "match_week_initial", "free"}
 VALID_FINAL_WINDOW_TERMINAL_MODES = {"inherit", "match_window_initial", "match_week_initial", "free"}
+VALID_CHP_SEGMENT_FORMULATIONS = {"legacy_big_m", "convex_hull"}
 
 
 @dataclass
@@ -72,6 +73,11 @@ class SolverSection:
 
 
 @dataclass
+class FormulationSection:
+    chp_segments: str = "legacy_big_m"
+
+
+@dataclass
 class RollingSection:
     enabled: bool = False
     horizon_hours: int = 48
@@ -96,6 +102,7 @@ class ExperimentConfig:
     cost: CostSection = field(default_factory=CostSection)
     commitment: CommitmentSection = field(default_factory=CommitmentSection)
     solver: SolverSection = field(default_factory=SolverSection)
+    formulation: FormulationSection = field(default_factory=FormulationSection)
     rolling: RollingSection = field(default_factory=RollingSection)
     qc: QCSection = field(default_factory=QCSection)
 
@@ -109,6 +116,7 @@ class ExperimentConfig:
             cost=CostSection(**payload.get("cost", {})),
             commitment=CommitmentSection(**payload.get("commitment", {})),
             solver=SolverSection(**payload.get("solver", {})),
+            formulation=FormulationSection(**payload.get("formulation", {})),
             rolling=RollingSection(**payload.get("rolling", {})),
             qc=QCSection(**payload.get("qc", {})),
         )
@@ -161,6 +169,11 @@ class ExperimentConfig:
             raise ValueError(
                 "solver.mip_rel_gap must be a finite fraction in [0, 1] "
                 "(0.2 = 20%, 0.02 = 2%, 0.002 = 0.2%)"
+            )
+        if self.formulation.chp_segments not in VALID_CHP_SEGMENT_FORMULATIONS:
+            raise ValueError(
+                "formulation.chp_segments must be one of "
+                f"{sorted(VALID_CHP_SEGMENT_FORMULATIONS)}"
             )
 
     def to_dict(self) -> dict[str, Any]:
