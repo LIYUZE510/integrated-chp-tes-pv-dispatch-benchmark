@@ -1,0 +1,52 @@
+run:
+  scenario: week_2023_dec01
+  method: uc
+  tag: resub_2026_outlier_raw_hull_uc_168h_gap0p002
+  uc_terminal_soc_mode: match_initial
+
+storage:
+  s_max_mwh: 800.0
+  p_ch_max_mw: 200.0
+  p_dis_max_mw: 200.0
+  eta_ch: 0.95
+  eta_dis: 0.95
+  loss_per_hour: 0.001
+  s_init_mwh: 200.0
+
+grid:
+  grid_export_cap_mw: 60.0
+  price_sell: 50.0
+  price_buy: 70.0
+  pv_scale: 1.0
+  e_load_base_mw: 20.0
+  e_load_alpha_per_heat: 0.0
+  penalty_pv_curt: 0.1
+  penalty_chp_curt: 0.0
+
+cost:
+  cost_q: 15.0
+  cost_boiler: 60.0
+  cost_dump: 50.0
+  penalty_under: 1000000.0
+  cycle_cost: 0.01
+
+commitment:
+  startup_cost: 5000.0
+  shutdown_cost: 0.0
+  min_up_hours: 3
+  min_down_hours: 2
+  on_init: 0
+
+solver:
+  time_limit_s: 900.0
+  mip_rel_gap: 0.002
+  tee: true
+
+formulation:
+  chp_segments: convex_hull
+
+qc:
+  residual_tol: 1.0e-5
+  bound_tol: 1.0e-5
+  overlap_tol_mw: 1.0e-5
+  fail_on_violation: false
