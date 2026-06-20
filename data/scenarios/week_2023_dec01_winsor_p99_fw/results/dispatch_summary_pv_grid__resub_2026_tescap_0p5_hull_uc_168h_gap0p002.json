@@ -1,0 +1,194 @@
+{
+  "created_utc": "2026-06-20T00:52:10.830290+00:00",
+  "method": "full_horizon_uc",
+  "tag": "resub_2026_tescap_0p5_hull_uc_168h_gap0p002",
+  "config_used": {
+    "run": {
+      "scenario": "week_2023_dec01_winsor_p99_fw",
+      "method": "uc",
+      "tag": "resub_2026_tescap_0p5_hull_uc_168h_gap0p002",
+      "uc_terminal_soc_mode": "match_initial"
+    },
+    "storage": {
+      "s_max_mwh": 400.0,
+      "p_ch_max_mw": 200.0,
+      "p_dis_max_mw": 200.0,
+      "eta_ch": 0.95,
+      "eta_dis": 0.95,
+      "loss_per_hour": 0.001,
+      "s_init_mwh": 200.0
+    },
+    "grid": {
+      "grid_export_cap_mw": 60.0,
+      "price_sell": 50.0,
+      "price_buy": 70.0,
+      "pv_scale": 1.0,
+      "e_load_base_mw": 20.0,
+      "e_load_alpha_per_heat": 0.0,
+      "penalty_pv_curt": 0.1,
+      "penalty_chp_curt": 0.0
+    },
+    "cost": {
+      "cost_q": 15.0,
+      "cost_boiler": 60.0,
+      "cost_dump": 50.0,
+      "penalty_under": 1000000.0,
+      "cycle_cost": 0.01
+    },
+    "commitment": {
+      "startup_cost": 5000.0,
+      "shutdown_cost": 0.0,
+      "min_up_hours": 3,
+      "min_down_hours": 2,
+      "on_init": 0
+    },
+    "solver": {
+      "time_limit_s": 900.0,
+      "mip_rel_gap": 0.002,
+      "tee": true
+    },
+    "formulation": {
+      "chp_segments": "convex_hull"
+    },
+    "rolling": {
+      "enabled": false,
+      "horizon_hours": 48,
+      "step_hours": 24,
+      "window_terminal_soc_mode": "match_window_initial",
+      "final_window_terminal_soc_mode": "match_week_initial"
+    },
+    "qc": {
+      "residual_tol": 1e-05,
+      "bound_tol": 1e-05,
+      "overlap_tol_mw": 1e-05,
+      "fail_on_violation": false
+    }
+  },
+  "scenario": {
+    "scenario": "week_2023_dec01_winsor_p99_fw",
+    "n_hours": 168,
+    "storage_s_max_mwh": 400.0,
+    "storage_p_ch_max_mw": 200.0,
+    "storage_p_dis_max_mw": 200.0,
+    "eta_ch": 0.95,
+    "eta_dis": 0.95,
+    "loss_per_hour": 0.001,
+    "s_init_mwh": 200.0,
+    "grid_export_cap_mw": 60.0,
+    "price_sell": 50.0,
+    "price_buy": 70.0,
+    "pv_scale": 1.0,
+    "e_load_base_mw": 20.0,
+    "e_load_alpha_per_heat": 0.0,
+    "penalty_pv_curt": 0.1,
+    "penalty_chp_curt": 0.0,
+    "cost_q": 15.0,
+    "cost_boiler": 60.0,
+    "cost_dump": 50.0,
+    "penalty_under": 1000000.0,
+    "cycle_cost": 0.01,
+    "startup_cost": 5000.0,
+    "shutdown_cost": 0.0,
+    "min_up_hours": 3,
+    "min_down_hours": 2,
+    "on_init": 0,
+    "time_limit_s": 900.0,
+    "mip_rel_gap": 0.002,
+    "tee": true,
+    "terminal_soc_target_mwh": 200.0,
+    "chp_segment_formulation": "convex_hull"
+  },
+  "solver": {
+    "status": "ok",
+    "termination": "optimal",
+    "objective_profit_like": -262747.5109207053,
+    "objective_system_cost_equivalent": 262747.5109207053,
+    "wallclock_s": 799.149643599987,
+    "reported_runtime_s": null,
+    "objective_sense": "maximize",
+    "incumbent_objective": -262747.51092070586,
+    "best_bound_objective": -262488.1232942656,
+    "achieved_gap_rel_fraction": 0.0009872124973946735,
+    "achieved_gap_percent": 0.09872124973946736,
+    "requested_gap_rel_fraction": 0.002,
+    "requested_gap_percent": 0.2,
+    "diagnostic_source": "highspy_info",
+    "gap_formula": "highspy_info.mip_gap",
+    "achieved_gap_rel": 0.0009872124973946735,
+    "best_feasible_objective": -262747.51092070586,
+    "best_objective_bound": -262488.1232942656,
+    "message": "<undefined>"
+  },
+  "totals": {
+    "heat_demand_mwh": 10404.603878888229,
+    "H_chp_mwh": 10710.822201551371,
+    "E_chp_mwh": 5624.8916981508055,
+    "Q_in_mwh": 25006.131267950535,
+    "boiler_mwh": 0.0,
+    "dump_mwh": 0.0,
+    "under_mwh": 0.0,
+    "pv_avail_mwh": 219.0542730965845,
+    "pv_used_mwh": 219.0542730965845,
+    "pv_curt_mwh": 0.0,
+    "E_chp_used_mwh": 5624.8916981508055,
+    "E_chp_curt_mwh": 0.0,
+    "grid_import_mwh": 339.94449463750004,
+    "grid_export_mwh": 2823.8904658848896
+  },
+  "qc": {
+    "heat_balance_residual_abs_max": 3.552713678800501e-15,
+    "elec_balance_residual_abs_max": 6.039613253960852e-14,
+    "starts": 1,
+    "stops": 0,
+    "hours_on": 159,
+    "hours_off": 9,
+    "hours_export_at_cap": 0
+  },
+  "economics_realized": {
+    "profit_objective_realized": -262747.5109207059,
+    "system_cost_realized": 262747.5109207059,
+    "solver_profit_objective": -262747.5109207053,
+    "solver_system_cost_equivalent": 262747.5109207053,
+    "difference_profit_realized_minus_solver": -6.402842700481415e-10,
+    "difference_system_cost_realized_minus_solver": 6.402842700481415e-10,
+    "total_objective_realized": -262747.5109207059,
+    "solver_reported_objective": -262747.5109207053,
+    "difference_realized_minus_solver": -6.402842700481415e-10,
+    "chp_cost": 375091.96901925805,
+    "boiler_cost": 0.0,
+    "dump_penalty_cost": 0.0,
+    "pv_curtailment_penalty_cost": 0.0,
+    "chp_curtailment_penalty_cost": 0.0,
+    "curtailment_penalty_cost": 0.0,
+    "under_penalty_cost": 0.0,
+    "import_cost": 23796.114624625003,
+    "export_revenue": 141194.52329424449,
+    "net_grid_cost": -117398.40866961949,
+    "startup_cost": 5000.0,
+    "shutdown_cost": 0.0,
+    "storage_cycling_cost": 53.950571067337876,
+    "cycling_cost": 53.950571067337876
+  },
+  "validation": {
+    "created_utc": "2026-06-20T00:52:10.837294+00:00",
+    "pass": true,
+    "issues": [],
+    "thresholds": {
+      "residual_tol": 1e-05,
+      "bound_tol": 1e-05,
+      "overlap_tol_mw": 1e-05
+    },
+    "metrics": {
+      "heat_balance_residual_abs_max": 3.552713678800501e-15,
+      "elec_balance_residual_abs_max": 6.039613253960852e-14,
+      "grid_export_max_mw": 42.0948469988692,
+      "soc_min_mwh": -0.0,
+      "soc_max_mwh": 400.0,
+      "import_export_overlap_max_mw": 9.431389422422338e-14,
+      "terminal_soc_mwh": 200.0,
+      "expected_terminal_soc_mwh": 200.0,
+      "terminal_soc_gap_mwh": 0.0,
+      "negative_nonnegative_columns": {}
+    }
+  }
+}
